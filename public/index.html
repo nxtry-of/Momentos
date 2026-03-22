@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌙 Momento</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0a0a0f;
+      --card: #12121a;
+      --border: #1e1e2e;
+      --text: #e0e0e0;
+      --text-muted: #888899;
+      --accent: #7c3aed;
+      --accent-hover: #8b5cf6;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --permanent: #f59e0b;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo span {
+      background: linear-gradient(135deg, var(--accent), #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-save {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      font-size: 0.9rem;
+    }
+
+    .btn-save:hover, .btn-save.active {
+      border-color: var(--permanent);
+      color: var(--permanent);
+    }
+
+    .btn-save.active {
+      background: var(--permanent);
+      color: white;
+    }
+
+    /* Auth Forms */
+    .auth-form {
+      background: var(--card);
+      padding: 30px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      max-width: 400px;
+      margin: 50px auto;
+    }
+
+    .auth-form h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .auth-switch {
+      text-align: center;
+      margin-top: 15px;
+      color: var(--text-muted);
+    }
+
+    .auth-switch a {
+      color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Post Creator */
+    .post-creator {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 30px;
+    }
+
+    .post-creator textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+      resize: vertical;
+      margin-bottom: 15px;
+    }
+
+    .post-creator textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .post-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .file-label {
+      padding: 10px 15px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .file-label:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .post-timer {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .post-timer.can-post {
+      color: var(--success);
+    }
+
+    /* Posts Feed */
+    .post {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: all 0.2s;
+    }
+
+    .post:hover {
+      border-color: var(--border);
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .post-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #a855f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .username {
+      font-weight: 600;
+    }
+
+    .post-time {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .post-content {
+      margin-bottom: 15px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .post-image {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .post-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 15px;
+      border-top: 1px solid var(--border);
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .permanent-badge {
+      background: var(--permanent);
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .expires-badge {
+      background: var(--border);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+
+    .save-count {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Messages */
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .message.error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--danger);
+      color: var(--danger);
+    }
+
+    .message.success {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid var(--success);
+      color: var(--success);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state h3 {
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 15px;
+      }
+      
+      header {
+        flex-direction: column;
+        gap: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        🌙 <span>Momento</span>
+      </div>
+      <div class="auth-buttons" id="authButtons">
+        <button class="btn btn-secondary" onclick="showLogin()">Entrar</button>
+        <button class="btn btn-primary" onclick="showRegister()">Registrarse</button>
+      </div>
+      <div class="auth-buttons hidden" id="userMenu">
+        <span id="welcomeUser" style="margin-right: 15px; color: var(--text-muted);"></span>
+        <button class="btn btn-secondary" onclick="logout()">Salir</button>
+      </div>
+    </header>
+
+    <div id="messageContainer"></div>
+
+    <!-- Login Form -->
+    <div id="loginForm" class="auth-form hidden">
+      <h2>🌙 Entrar</h2>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Usuario</label>
+          <input type="text" id="loginUsername" required>
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="loginPassword" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
+      </form>
+      <p class="auth-switch">
+        ¿No tienes cuenta? <a onclick="showRegister()">Regístrate</a>
+      </p>
+    </div>
+
+    <!-- Register Form -->
+    <div id="registerForm" class="auth-form hidden">
+      <h2>🌙 Crear cuenta</h2>
+      <form onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label>Usuario</label>
+          <input type="text" id="regUsername" required minlength="3">
+        </div>
+        <div class="form-group">
+          <label>Email (opcional)</label>
+          <input type="email" id="regEmail">
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="regPassword" required minlength="6">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Crear cuenta</button>
+      </form>
+      <p class="auth-switch">
+        ¿Ya tienes cuenta? <a onclick="showLogin()">Entra</a>
+      </p>
+    </div>
+
+    <!-- Post Creator -->
+    <div id="postCreator" class="post-creator hidden">
+      <textarea id="postContent" placeholder="¿Qué momento quieres compartir?"></textarea>
+      <div class="post-actions">
+        <div>
+          <input type="file" id="postImage" class="file-input" accept="image/*">
+          <label for="postImage" class="file-label">📷 Añadir imagen</label>
+          <span id="fileName" style="margin-left: 10px; font-size: 0.85rem; color: var(--text-muted);"></span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <span id="postTimer" class="post-timer">Cargando...</span>
+          <button class="btn btn-primary" onclick="createPost()" id="postBtn">Publicar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Posts Feed -->
+    <div id="postsFeed"></div>
+  </div>
+
+  <script>
+    const API_URL = '';
+    let token = localStorage.getItem('momento_token');
+    let currentUser = null;
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+      if (token) {
+        checkAuth();
+      } else {
+        showAuthButtons();
+      }
+      loadPosts();
+      
+      // File input listener
+      document.getElementById('postImage').addEventListener('change', (e) => {
+        const fileName = e.target.files[0]?.name;
+        document.getElementById('fileName').textContent = fileName || '';
+      });
+    });
+
+    // Auth functions
+    function showAuthButtons() {
+      document.getElementById('authButtons').classList.remove('hidden');
+      document.getElementById('userMenu').classList.add('hidden');
+      document.getElementById('loginForm').classList.add('hidden');
+      document.getElementById('registerForm').classList.add('hidden');
+      document.getElementById('postCreator').classList.add('hidden');
+    }
+
+    function showLogin() {
+      document.getElementById('authButtons').classList.add('hidden');
+      document.getElementById('userMenu').classList.add('hidden');
+      document.getElementById('loginForm').classList.remove('hidden');
+      document.getElementById('registerForm').classList.add('hidden');
+    }
+
+    function showRegister() {
+      document.getElementById('authButtons').classList.add('hidden');
+      document.getElementById('userMenu').classList.add('hidden');
+      document.getElementById('loginForm').classList.add('hidden');
+      document.getElementById('registerForm').classList.remove('hidden');
+    }
+
+    function showLoggedIn() {
+      document.getElementById('authButtons').classList.add('hidden');
+      document.getElementById('userMenu').classList.remove('hidden');
+      document.getElementById('loginForm').classList.add('hidden');
+      document.getElementById('registerForm').classList.add('hidden');
+      document.getElementById('postCreator').classList.remove('hidden');
+    }
+
+    async function checkAuth() {
+      try {
+        const res = await fetch(`${API_URL}/api/me`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          currentUser = data.user;
+          document.getElementById('welcomeUser').textContent = `@${currentUser.username}`;
+          showLoggedIn();
+          updatePostTimer(data.nextPostTime, data.canPostNow);
+        } else {
+          logout();
+        }
+      } catch (error) {
+        console.error('Error checking auth:', error);
+        logout();
+      }
+    }
+
+    function logout() {
+      token = null;
+      currentUser = null;
+      localStorage.removeItem('momento_token');
+      showAuthButtons();
+      loadPosts();
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+
+      try {
+        const res = await fetch(`${API_URL}/api/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+        
+        if (res.ok) {
+          token = data.token;
+          currentUser = data.user;
+          localStorage.setItem('momento_token', token);
+          document.getElementById('welcomeUser').textContent = `@${currentUser.username}`;
+          showLoggedIn();
+          updatePostTimer(null, true);
+          loadPosts();
+          showMessage('¡Bienvenido de nuevo!', 'success');
+        } else {
+          showMessage(data.error, 'error');
+        }
+      } catch (error) {
+        showMessage('Error de conexión', 'error');
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const username = document.getElementById('regUsername').value;
+      const email = document.getElementById('regEmail').value;
+      const password = document.getElementById('regPassword').value;
+
+      try {
+        const res = await fetch(`${API_URL}/api/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password })
+        });
+
+        const data = await res.json();
+        
+        if (res.ok) {
+          token = data.token;
+          currentUser = data.user;
+          localStorage.setItem('momento_token', token);
+          document.getElementById('welcomeUser').textContent = `@${currentUser.username}`;
+          showLoggedIn();
+          updatePostTimer(null, true);
+          loadPosts();
+          showMessage('¡Cuenta creada! Ya puedes publicar', 'success');
+        } else {
+          showMessage(data.error, 'error');
+        }
+      } catch (error) {
+        showMessage('Error de conexión', 'error');
+      }
+    }
+
+    // Post functions
+    function updatePostTimer(nextPostTime, canPostNow) {
+      const timerEl = document.getElementById('postTimer');
+      const postBtn = document.getElementById('postBtn');
+      
+      if (canPostNow || !nextPostTime) {
+        timerEl.textContent = '✅ Puedes publicar ahora';
+        timerEl.className = 'post-timer can-post';
+        postBtn.disabled = false;
+      } else {
+        const nextTime = new Date(nextPostTime);
+        const now = new Date();
+        const diff = nextTime - now;
+        const minutes = Math.ceil(diff / 60000);
+        
+        timerEl.textContent = `⏱️ Próximo post en ${minutes} min`;
+        timerEl.className = 'post-timer';
+        postBtn.disabled = true;
+      }
+    }
+
+    async function createPost() {
+      const content = document.getElementById('postContent').value.trim();
+      const imageFile = document.getElementById('postImage').files[0];
+      
+      if (!content) {
+        showMessage('Escribe algo para publicar', 'error');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('content', content);
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
+
+      try {
+        const res = await fetch(`${API_URL}/api/posts`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+
+        const data = await res.json();
+        
+        if (res.ok) {
+          document.getElementById('postContent').value = '';
+          document.getElementById('postImage').value = '';
+          document.getElementById('fileName').textContent = '';
+          showMessage('¡Post publicado!', 'success');
+          checkAuth(); // Refresh timer
+          loadPosts();
+        } else {
+          if (data.nextPostIn) {
+            showMessage(`⏱️ ${data.error}. ${data.nextPostIn}`, 'error');
+          } else {
+            showMessage(data.error, 'error');
+          }
+        }
+      } catch (error) {
+        showMessage('Error de conexión', 'error');
+      }
+    }
+
+    async function loadPosts() {
+      try {
+        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        const res = await fetch(`${API_URL}/api/posts`, { headers });
+        
+        if (res.ok) {
+          const posts = await res.json();
+          renderPosts(posts);
+        } else {
+          renderPosts([]);
+        }
+      } catch (error) {
+        console.error('Error loading posts:', error);
+        renderPosts([]);
+      }
+    }
+
+    function renderPosts(posts) {
+      const feed = document.getElementById('postsFeed');
+      
+      if (posts.length === 0) {
+        feed.innerHTML = `
+          <div class="empty-state">
+            <h3>🌑 Sin momentos aún</h3>
+            <p>Sé el primero en compartir algo</p>
+          </div>
+        `;
+        return;
+      }
+
+      feed.innerHTML = posts.map(post => {
+        const timeAgo = getTimeAgo(new Date(post.created_at + 'Z'));
+        const expiresAt = new Date(post.expires_at + 'Z');
+        const isExpired = expiresAt < new Date();
+        const hoursLeft = Math.max(0, Math.ceil((expiresAt - new Date()) / 3600000));
+        
+        return `
+          <div class="post">
+            <div class="post-header">
+              <div class="post-author">
+                <div class="avatar">${post.username[0].toUpperCase()}</div>
+                <div>
+                  <div class="username">@${post.username}</div>
+                  <div class="post-time">${timeAgo}</div>
+                </div>
+              </div>
+            </div>
+            
+            ${post.content ? `<div class="post-content">${escapeHtml(post.content)}</div>` : ''}
+            ${post.image ? `<img src="${post.image}" class="post-image" alt="Post image">` : ''}
+            
+            <div class="post-footer">
+              <div class="post-meta">
+                ${post.is_permanent 
+                  ? '<span class="permanent-badge">💾 Permanente</span>' 
+                  : `<span class="expires-badge">⏳ ${hoursLeft}h restantes</span>`
+                }
+                <button class="btn btn-save ${post.saved_by_current ? 'active' : ''}" 
+                        onclick="toggleSave('${post.id}')"
+                        ${!token ? 'disabled' : ''}>
+                  💾 ${post.save_count}
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function toggleSave(postId) {
+      if (!token) {
+        showMessage('Inicia sesión para salvar posts', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_URL}/api/posts/${postId}/save`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+          loadPosts();
+        } else {
+          const data = await res.json();
+          if (data.error !== 'Ya salvaste este post') {
+            showMessage(data.error, 'error');
+          }
+        }
+      } catch (error) {
+        showMessage('Error de conexión', 'error');
+      }
+    }
+
+    // Utilities
+    function showMessage(text, type) {
+      const container = document.getElementById('messageContainer');
+      container.innerHTML = `<div class="message ${type}">${text}</div>`;
+      setTimeout(() => container.innerHTML = '', 5000);
+    }
+
+    function getTimeAgo(date) {
+      const seconds = Math.floor((new Date() - date) / 1000);
+      
+      if (seconds < 60) return 'Ahora';
+      if (seconds < 3600) return `Hace ${Math.floor(seconds / 60)} min`;
+      if (seconds < 86400) return `Hace ${Math.floor(seconds / 3600)} h`;
+      return `Hace ${Math.floor(seconds / 86400)} d`;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>

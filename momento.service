@@ -1,0 +1,16 @@
+[Unit]
+Description=Momento Social Network
+After=network.target
+
+[Service]
+Type=simple
+User=darkness
+WorkingDirectory=/home/darkness/Red Social
+ExecStart=/home/linuxbrew/.linuxbrew/bin/node server.js
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=PORT=3000
+
+[Install]
+WantedBy=multi-user.target
