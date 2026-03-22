@@ -1,0 +1,9 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+*.md
+momento.db
+.DS_Store
+uploads/*
+!uploads/.gitkeep

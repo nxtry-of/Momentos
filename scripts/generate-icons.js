@@ -1,0 +1,25 @@
+const fs = require('fs');
+const path = require('path');
+
+// Iconos SVG simples (luna + texto)
+const svgIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="100" fill="#0a0a0f"/>
+  <circle cx="256" cy="256" r="180" fill="url(#gradient)"/>
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3aed"/>
+      <stop offset="100%" style="stop-color:#a855f7"/>
+    </linearGradient>
+  </defs>
+  <path d="M256 100c-88.4 0-160 71.6-160 160s71.6 160 160 160c-44.2 0-80-71.6-80-160s35.8-160 80-160z" fill="#fff" opacity="0.9"/>
+</svg>
+`;
+
+// Escribir SVG
+const publicDir = path.join(__dirname, '..', 'public');
+fs.writeFileSync(path.join(publicDir, 'icon.svg'), svgIcon);
+
+console.log('✅ Icono SVG generado: public/icon.svg');
+console.log('📝 Para iconos PNG reales, usa: https://realfavicongenerator.net/');
+console.log('   O convierte el SVG con: convert icon.svg -resize 512x512 icon-512.png');

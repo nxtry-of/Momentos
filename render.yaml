@@ -2,10 +2,23 @@ services:
   - type: web
     name: momento-social
     env: node
+    region: frankfurt
+    plan: free
     buildCommand: npm install
     startCommand: node server.js
     envVars:
       - key: NODE_ENV
         value: production
+      - key: JWT_SECRET
+        generateValue: true
       - key: PORT
         value: 10000
+    disk:
+      name: uploads
+      mountPath: /app/uploads
+      sizeGB: 1
+databases:
+  - name: momento-db
+    databaseName: momento
+    user: momento
+    plan: free
