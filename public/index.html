@@ -919,27 +919,31 @@
         
         if (res.ok) {
           const posts = await res.json();
-          updateStats(posts);
           renderPosts(posts);
         } else {
-          updateStats([]);
           renderPosts([]);
         }
+        
+        // Cargar estadísticas reales de la DB
+        loadStats();
       } catch (error) {
         console.error('Error loading posts:', error);
-        updateStats([]);
         renderPosts([]);
       }
     }
 
-    function updateStats(posts) {
-      const totalPosts = posts.length;
-      const permanentPosts = posts.filter(p => p.is_permanent).length;
-      const uniqueUsers = new Set(posts.map(p => p.user_id)).size;
-      
-      document.getElementById('statPosts').textContent = totalPosts;
-      document.getElementById('statUsers').textContent = uniqueUsers;
-      document.getElementById('statPermanent').textContent = permanentPosts;
+    async function loadStats() {
+      try {
+        const res = await fetch(`${API_URL}/api/stats`);
+        if (res.ok) {
+          const stats = await res.json();
+          document.getElementById('statPosts').textContent = stats.totalPosts;
+          document.getElementById('statUsers').textContent = stats.totalUsers;
+          document.getElementById('statPermanent').textContent = stats.permanentPosts;
+        }
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
     }
 
     function renderPosts(posts) {
