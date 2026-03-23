@@ -81,24 +81,40 @@ async function getPosts(req, res) {
 }
 
 async function createPost(req, res) {
+  console.log('=== CREATE POST ===');
+  console.log('Headers:', req.headers);
+  console.log('Body type:', typeof req.body);
+  console.log('Body:', req.body);
+  
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
     
     if (!token) {
+      console.log('No token provided');
       return res.status(401).json({ error: 'Token requerido' });
     }
 
     let user;
     try {
       user = jwt.verify(token, process.env.JWT_SECRET);
+      console.log('User decoded:', user);
     } catch (e) {
+      console.log('Token invalid:', e.message);
       return res.status(403).json({ error: 'Token inválido' });
     }
 
-    // Parsear body (Vercel serverless)
-    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    // Parsear body (Vercel serverless + FormData)
+    let body;
+    if (typeof req.body === 'string') {
+      body = JSON.parse(req.body);
+    } else if (req.body instanceof FormData) {
+      body = Object.fromEntries(req.body);
+    } else {
+      body = req.body || {};
+    }
     const { content, image } = body;
+    console.log('Content:', content, 'Image:', image);
     
     if (!content || content.trim().length === 0) {
       return res.status(400).json({ error: 'El contenido no puede estar vacío' });
