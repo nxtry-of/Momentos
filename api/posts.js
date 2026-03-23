@@ -96,7 +96,9 @@ async function createPost(req, res) {
       return res.status(403).json({ error: 'Token inválido' });
     }
 
-    const { content, image } = req.body;
+    // Parsear body (Vercel serverless)
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    const { content, image } = body;
     
     if (!content || content.trim().length === 0) {
       return res.status(400).json({ error: 'El contenido no puede estar vacío' });

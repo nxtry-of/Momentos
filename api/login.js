@@ -8,7 +8,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { username, password } = req.body;
+    // Parsear body (Vercel serverless)
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    const { username, password } = body;
 
     const { data: user } = await supabase
       .from('users')

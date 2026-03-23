@@ -9,7 +9,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { username, password, email } = req.body;
+    // Parsear body (Vercel serverless)
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    const { username, password, email } = body;
 
     if (!username || !password) {
       return res.status(400).json({ error: 'Username y password requeridos' });
