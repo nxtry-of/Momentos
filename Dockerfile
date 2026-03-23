@@ -14,8 +14,9 @@ COPY . .
 # Crear carpeta uploads
 RUN mkdir -p /app/uploads
 
-# Puerto
-EXPOSE 3000
+# Puerto (Hugging Face usa 7860)
+EXPOSE 7860
+ENV PORT=7860
 
 # Iniciar
 CMD ["node", "server.js"]
